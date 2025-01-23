@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.4983277591973244" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="658.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.lumen.app.RootController">
+   <items>
+      <VBox prefHeight="398.0" prefWidth="198.0">
+         <children>
+            <MenuBar prefHeight="25.0" prefWidth="404.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Management">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#handleAuthorManagement" text="Authors Update" />
+                        <MenuItem mnemonicParsing="false" onAction="#handelDegreeManagement" text="Degree Update" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <TextField fx:id="searchfield" prefHeight="36.0" prefWidth="373.0" promptText="Search Thesis">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </TextField>
+            <TableView fx:id="thesisTable" prefHeight="674.0" prefWidth="474.0">
+              <columns>
+                <TableColumn fx:id="thesisIDColumn" prefWidth="78.0" text="ID" />
+                <TableColumn fx:id="thesisTitleColumn" prefWidth="303.0" text="Title" />
+                  <TableColumn fx:id="thesisYearColumn" minWidth="0.0" prefWidth="151.0" text="Year" />
+              </columns>
+            </TableView>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
+      <VBox prefHeight="654.0" prefWidth="545.0" spacing="5.0">
+         <children>
+            <HBox prefHeight="33.0" prefWidth="527.0">
+               <children>
+                  <Region prefHeight="36.0" prefWidth="336.0" />
+                  <Label prefHeight="17.0" prefWidth="37.0" text="ID">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="idfield" editable="false" prefHeight="30.0" prefWidth="116.0" />
+               </children>
+            </HBox>
+            <VBox prefHeight="169.0" prefWidth="452.0" spacing="7.0">
+               <children>
+                  <Label text="Thesis Title" />
+                  <TextArea fx:id="thesisTitleField" prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <HBox prefHeight="38.0" prefWidth="529.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="123.0" text="For the Degree " />
+                  <ComboBox fx:id="degreeField" prefHeight="36.0" prefWidth="337.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="452.0" spacing="20.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="110.0" text="Date Submitted" />
+                  <ComboBox fx:id="monthSubmittedField" prefHeight="36.0" prefWidth="146.0" />
+                  <ComboBox fx:id="yearSubmittedField" prefWidth="150.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="21.0" prefWidth="452.0">
+               <children>
+                  <Region prefHeight="21.0" prefWidth="36.0" />
+                  <Label text="Thesis Update" />
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="452.0" spacing="20.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#handlEdit" prefHeight="36.0" prefWidth="98.0" text="Edit Thesis" />
+                  <Button mnemonicParsing="false" onAction="#handleDeteThesis" prefHeight="36.0" prefWidth="120.0" text="Delete Thesis" />
+                  <Button mnemonicParsing="false" onAction="#handleAdd" prefHeight="36.0" prefWidth="110.0" text="Save Thesis" />
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="50.0" right="20.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="20.0" prefWidth="452.0">
+               <children>
+                  <Label text="Authors" />
+               </children>
+            </HBox>
+            <TableView fx:id="authorTable" prefHeight="200.0" prefWidth="200.0">
+              <columns>
+                <TableColumn fx:id="researchIDColumn" prefWidth="105.0" text="RID" />
+                <TableColumn fx:id="researcherNameColumn" prefWidth="231.0" text="Author" />
+                  <TableColumn fx:id="roleColumn" prefWidth="114.0" text="Role" />
+              </columns>
+            </TableView>
+            <Label text="Author Update" />
+            <HBox prefHeight="37.0" prefWidth="452.0" spacing="20.0">
+               <children>
+                  <ComboBox fx:id="researcherBox" prefHeight="36.0" prefWidth="294.0" />
+                  <ComboBox fx:id="roleBox" prefWidth="150.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="43.0" prefWidth="452.0">
+               <children>
+                  <Button fx:id="deleteAuthorButton" mnemonicParsing="false" onAction="#HandleAuthorDeleteButton" text="Delete Author" />
+                  <Region prefHeight="43.0" prefWidth="231.0" />
+                  <Button fx:id="updateAuthorButton" mnemonicParsing="false" onAction="#HandleAuthorSaveButton" text="Save Author" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding></VBox>
+   </items>
+</SplitPane>
