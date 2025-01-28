@@ -30,7 +30,7 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#handleDeleteDegree" prefHeight="25.0" prefWidth="78.0" text="Delete" />
                   <Region prefHeight="25.0" prefWidth="386.0" />
                   <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="72.0" text="Save" />
                </children>

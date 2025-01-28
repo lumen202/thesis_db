@@ -1,5 +1,9 @@
 package dev.lumen.app;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
 import dev.lumen.App;
 import dev.lumen.data.ResearcherDAO;
 import dev.lumen.data.ThesisDAO;
@@ -8,14 +12,12 @@ import dev.lumen.models.Degree;
 import dev.lumen.models.Researcher;
 import dev.lumen.models.Student;
 import dev.lumen.models.Thesis;
-
 import dev.sol.core.application.FXController;
 import dev.sol.core.application.loader.FXLoaderFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
@@ -83,10 +85,30 @@ public class RootController extends FXController {
     private ObservableList<String> researcherList;
     private ObservableList<String> roleList;
 
-    private Scene scene;
+    private static final List<String> DEFAULT_ROLES = List.of("Researcher", "Adviser");
+
+    // @FXML
+    // private void handleExportPdf() {
+    // try {
+    // String home = System.getProperty("user.home");
+    // String filePath = home + "/Documents/Thesis_Report_" + LocalDate.now() +
+    // ".pdf";
+
+    // PdfExporter.exportThesisReport(thesisMasterList, filePath);
+
+    // Alert alert = new Alert(AlertType.INFORMATION);
+    // alert.setTitle("Export Successful");
+    // alert.setHeaderText(null);
+    // alert.setContentText("PDF report saved to:\n" + filePath);
+    // alert.showAndWait();
+    // } catch (IOException e) {
+    // showErrorAlert("Export Failed", "Error generating PDF: " + e.getMessage());
+    // }
+    // }
 
     @FXML
     private void handleAuthorManagement() {
+        // new scene for author management
         AuthorViewLoader loader = (AuthorViewLoader) FXLoaderFactory
                 .createInstance(AuthorViewLoader.class,
                         getClass().getResource("/dev/lumen/app/AUTHORVIEW.fxml"))
@@ -97,6 +119,7 @@ public class RootController extends FXController {
 
     @FXML
     private void handelDegreeManagement() {
+        // New Scene for degree management
         DegreeViewLoader loader = (DegreeViewLoader) FXLoaderFactory
                 .createInstance(DegreeViewLoader.class,
                         getClass().getResource("/dev/lumen/app/DEGREEVIEW.fxml"))
@@ -107,9 +130,6 @@ public class RootController extends FXController {
 
     @FXML
     private void HandleAuthorSaveButton() {
-        // TODO : make it so whe i press the add button the researcher show up in the
-        // table view
-
         authorFilteredList = new FilteredList<>(authorMasterList, p -> true);
         Thesis selectedThesis = thesisTable.getSelectionModel().getSelectedItem();
         int selectedStudentID = researcherBox.getSelectionModel().getSelectedIndex();
@@ -134,15 +154,9 @@ public class RootController extends FXController {
     private void handleDeteThesis() {
         Thesis selectedThesis = thesisTable.getSelectionModel().getSelectedItem();
         if (selectedThesis == null) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Thesis Delete Error");
-            alert.setHeaderText("Null selection Error!");
-            alert.setContentText("No selected Thesis form the table");
-            alert.initOwner(scene.getWindow());
-            alert.show();
+            showErrorAlert("Selection Error", "Please select a thesis to delete");
             return;
         }
-
         thesisMasterList.remove(selectedThesis);
         ThesisDAO.delete(selectedThesis);
     }
@@ -151,26 +165,51 @@ public class RootController extends FXController {
     @FXML
     private void handleAdd() {
 
-        Thesis selectedThesis = thesisTable.getSelectionModel().getSelectedItem();
-        Thesis newThesis = new Thesis(selectedThesis.getThesisID() + 1, "------> Click Here To Add New Thesis <------",
-                2000,
-                1, 1);
+        // Get values from form fields
+        String title = thesisTitleField.getText().trim();
+        Integer year = yearSubmittedField.getValue();
+        Month month = monthSubmittedField.getValue();
+        String degree = degreeField.getValue();
 
-        selectedThesis.setThesisTitle(thesisTitleField.getText());
-        selectedThesis.setDegID(degreeField.getSelectionModel().getSelectedIndex() + 1);
-        selectedThesis.setMonth(monthSubmittedField.getSelectionModel().getSelectedIndex() + 1);
-        selectedThesis.setYear(years.get(yearSubmittedField.getSelectionModel().getSelectedIndex()));
+        // Validate inputs
+        if (title.isEmpty() || year == null || month == null || degree == null) {
+            showErrorAlert("Input Error", "Please fill all required fields");
+            return;
+        }
 
-        thesisMasterList.add(newThesis);
-        ThesisDAO.update(selectedThesis);
-        ThesisDAO.insert(newThesis);
+        try {
+            // Create new thesis with new ID
+            int newId = thesisMasterList.stream()
+                    .mapToInt(Thesis::getThesisID)
+                    .max()
+                    .orElse(0) + 1;
 
+            Thesis newThesis = new Thesis(
+                    newId,
+                    title,
+                    year,
+                    degreeMasterList.get(degreeField.getSelectionModel().getSelectedIndex()).getDegreeID(),
+                    month.getMonthNumber());
+
+            // Add to DAO and list
+            ThesisDAO.insert(newThesis);
+            thesisMasterList.add(newThesis);
+
+            // Clear fields after successful addition
+            resetValue();
+        } catch (Exception e) {
+            showErrorAlert("Database Error", "Failed to create new thesis: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handlEdit() {
 
         Thesis selectedThesis = thesisTable.getSelectionModel().getSelectedItem();
+        if (selectedThesis == null) {
+            showErrorAlert("Selection Error", "Please select a thesis to edit");
+            return;
+        }
         resetValue();
         deleteAuthorButton.setVisible(true);
         updateAuthorButton.setVisible(true);
@@ -189,7 +228,8 @@ public class RootController extends FXController {
         roleBox.setValue(roleList.get(0));
 
         if (thesisTable.getSelectionModel().getSelectedIndex() == thesisMasterList.size() - 1) {
-            // default values for click to add
+            // default values for  --->click to add<----
+            idfield.setText(String.valueOf(thesisMasterList.get(0).getThesisID()));
             yearSubmittedField.setValue(years.get(0));
             degreeField.setValue(degreeList.get(0));
             monthSubmittedField.setValue(months.get(0));
@@ -217,8 +257,6 @@ public class RootController extends FXController {
         years = FXCollections.observableArrayList();
         researcherList = FXCollections.observableArrayList();
         roleList = FXCollections.observableArrayList();
-
-        scene = (Scene) getParameter("SCENE");
 
         // Thesis Table
         thesisIDColumn.setCellValueFactory(cell -> cell.getValue().thesisIDProperty().asObject());
@@ -340,10 +378,20 @@ public class RootController extends FXController {
     }
 
     public void resetValue() {
-        thesisTitleField.setPromptText(null);
+
+        thesisTitleField.setText("");
+        thesisTitleField.setPromptText("Please enter thesis title");
         degreeField.setValue(null);
         yearSubmittedField.setValue(null);
         monthSubmittedField.setValue(null);
+    }
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public void listContent() {
@@ -365,10 +413,7 @@ public class RootController extends FXController {
             researcherList.add(studentMasterList.get(i).getFullname());
         }
 
-        // Role
-        for (int i = 0; i <= 1; i++) {
-            roleList.add(authorMasterList.get(i).getRole());
-        }
+        roleList = FXCollections.observableArrayList(DEFAULT_ROLES);
 
     }
 

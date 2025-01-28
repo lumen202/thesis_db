@@ -11,7 +11,7 @@ public class AuthorViewLoader extends FXLoader {
     @Override
     public void load() {
         Stage ownerStage = (Stage) params.get("OWNER_STAGE");
-
+    
         Stage stage = new Stage();
         stage.setTitle("Author Management");
         stage.setScene(new Scene(root));
@@ -19,7 +19,6 @@ public class AuthorViewLoader extends FXLoader {
         stage.initOwner(ownerStage);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
-       
 
         AuthorViewController controller = loader.getController();
         App.CONTROLLER_REGISTRY.register("AUTHROVIEW", controller);

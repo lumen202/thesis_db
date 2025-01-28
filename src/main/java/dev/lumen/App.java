@@ -1,6 +1,7 @@
 package dev.lumen;
 
-import dev.lumen.app.RootLoader;
+import dev.lumen.app.login.LoginLoader;
+import dev.lumen.data.AccountDAO;
 import dev.lumen.data.DegreeDAO;
 import dev.lumen.data.ResearcherDAO;
 import dev.lumen.data.StudentDAO;
@@ -45,17 +46,19 @@ public class App extends FXApplication {
                                 FXCollections.observableArrayList(ResearcherDAO.getResearcherList()));
                 COLLECTIONS_REGISTRY.register("DEGREE",
                                 FXCollections.observableArrayList(DegreeDAO.getDegreeList()));
+                COLLECTIONS_REGISTRY.register("ACCOUNTS", FXCollections.observableList(AccountDAO.getAccountList()));
 
         }
 
         public void initialize_application() {
 
-                RootLoader rootLoader = (RootLoader) FXLoaderFactory
-                                .createInstance(RootLoader.class, App.class.getResource("/dev/lumen/app/ROOT.fxml"))
+                LoginLoader loginLoader = (LoginLoader) FXLoaderFactory
+                                .createInstance(LoginLoader.class,
+                                                App.class.getResource("/dev/lumen/app/login/LOGIN.fxml"))
                                 .addParameter("scene", applicationScene)
                                 .addParameter("OWNER", applicationStage)
                                 .initialize();
-                rootLoader.load();
+                loginLoader.load();
 
         }
 

@@ -11,6 +11,18 @@
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>8.0.3</version>
+        </dependency>
         <dependency>
             <groupId>dev.sol.core</groupId>
             <artifactId>core-fx</artifactId>

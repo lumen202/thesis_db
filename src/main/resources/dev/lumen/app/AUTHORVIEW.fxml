@@ -21,7 +21,7 @@
                <children>
                   <HBox prefHeight="39.0" prefWidth="259.0" spacing="10.0">
                      <children>
-                        <TextField prefHeight="25.0" prefWidth="199.0" />
+                        <TextField fx:id="authorManagementSearchField" prefHeight="25.0" prefWidth="199.0" />
                         <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="43.0" text="Go" />
                      </children>
                      <padding>
